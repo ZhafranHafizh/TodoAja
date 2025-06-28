@@ -1,0 +1,18 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ActivityController;
+
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('pin');
+
+Route::middleware(['pin'])->group(function () {
+    Route::get('/dashboard', [ActivityController::class, 'index']);
+    Route::resource('activities', ActivityController::class)->except(['index', 'show']);
+});
+
+Route::get('/', function () {
+    return redirect('/dashboard');
+});
