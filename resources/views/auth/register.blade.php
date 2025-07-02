@@ -71,13 +71,11 @@
         border: 2px solid #dfe1e6;
         border-radius: 8px;
         padding: 14px 16px;
-        font-size: 20px;
+        font-size: 16px;
         background: white;
         transition: all 0.2s ease;
         color: #172b4d;
-        font-family: 'Courier New', monospace;
-        text-align: center;
-        letter-spacing: 4px;
+        font-family: inherit;
         box-sizing: border-box;
     }
     
@@ -122,18 +120,6 @@
         background: #ebecf0;
         color: #172b4d;
         border-color: #c1c7d0;
-    }
-    
-    .jira-btn.ghost {
-        background: transparent;
-        color: #0052cc;
-        border: none;
-        padding: 8px 16px;
-        font-size: 14px;
-    }
-    
-    .jira-btn.ghost:hover {
-        background: #f4f5f7;
     }
     
     .alert {
@@ -192,19 +178,29 @@
         margin-top: 16px;
     }
     
-    .resend-section {
-        margin-top: 24px;
-        padding-top: 24px;
-        border-top: 1px solid #dfe1e6;
+    .feature-list {
+        background: #f4f5f7;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 24px 0;
     }
     
-    .resend-form {
-        display: none;
-        margin-top: 16px;
+    .feature-list h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #172b4d;
+        margin: 0 0 12px 0;
     }
     
-    .resend-form.show {
-        display: block;
+    .feature-list ul {
+        margin: 0;
+        padding-left: 20px;
+        color: #6b778c;
+        font-size: 14px;
+    }
+    
+    .feature-list li {
+        margin-bottom: 6px;
     }
     
     @media (max-width: 480px) {
@@ -222,8 +218,8 @@
     <div class="auth-card">
         <!-- Header -->
         <div class="auth-header">
-            <h1>🎯 TodoAja</h1>
-            <p>Enter your 4-digit PIN to continue</p>
+            <h1>🎯 Join TodoAja</h1>
+            <p>Create your personal productivity account</p>
         </div>
         
         <!-- Body -->
@@ -263,103 +259,75 @@
                 </div>
             @endif
             
-            <!-- Login Form -->
-            <form method="POST" action="{{ route('login') }}">
+            <!-- What you'll get -->
+            <div class="feature-list">
+                <h3>✨ What you'll get:</h3>
+                <ul>
+                    <li>Personal task management dashboard</li>
+                    <li>Category organization with colors</li>
+                    <li>Deadline tracking and reminders</li>
+                    <li>Simple PIN-based secure access</li>
+                </ul>
+            </div>
+            
+            <!-- Registration Form -->
+            <form method="POST" action="{{ route('register') }}">
                 @csrf
                 <div class="form-group">
-                    <label for="pin" class="form-label">
+                    <label for="email" class="form-label">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px;">
-                            <rect x="3" y="11" width="18" height="10" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
-                            <circle cx="12" cy="16" r="1" fill="currentColor"/>
-                            <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
-                        4-Digit PIN
+                        Email Address
                     </label>
                     <input 
-                        type="password" 
+                        type="email" 
                         class="form-control" 
-                        id="pin" 
-                        name="pin" 
-                        placeholder="••••"
+                        id="email" 
+                        name="email" 
+                        placeholder="Enter your email address"
                         required 
-                        autofocus 
-                        inputmode="numeric" 
-                        pattern="[0-9]*"
-                        maxlength="4"
-                        autocomplete="off"
+                        value="{{ old('email') }}"
+                        autocomplete="email"
+                        autofocus
                     >
                 </div>
                 
                 <button type="submit" class="jira-btn">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4m-5-4l5-5-5-5m5 5H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    Login to Dashboard
+                    Create Account & Get PIN
                 </button>
             </form>
             
             <div class="help-text">
-                Enter the 4-digit PIN from your email
+                We'll send a 4-digit PIN to your email address.<br>
+                No passwords needed - just your PIN!
             </div>
             
             <!-- Divider -->
             <div class="divider">
-                <span>Need help?</span>
+                <span>Already have an account?</span>
             </div>
             
-            <!-- Help Options -->
-            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-                <button type="button" class="jira-btn ghost" onclick="toggleResendForm()" style="flex: 1;">
-                    📧 Resend PIN
-                </button>
-                <a href="{{ route('register') }}" class="jira-btn ghost" style="flex: 1;">
-                    ➕ New Account
-                </a>
-            </div>
-            
-            <!-- Resend PIN Form -->
-            <div class="resend-form" id="resend-form">
-                <form method="POST" action="{{ route('resend-pin') }}">
-                    @csrf
-                    <div class="form-group">
-                        <label for="resend-email" class="form-label">Email Address</label>
-                        <input 
-                            type="email" 
-                            class="form-control" 
-                            id="resend-email" 
-                            name="email" 
-                            placeholder="Enter your email"
-                            required
-                            style="font-family: Inter, sans-serif; letter-spacing: normal; text-align: left; font-size: 16px;"
-                        >
-                    </div>
-                    <button type="submit" class="jira-btn secondary">
-                        📨 Send New PIN
-                    </button>
-                </form>
-            </div>
+            <!-- Back to Login -->
+            <a href="{{ route('login') }}" class="jira-btn secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back to Login
+            </a>
         </div>
     </div>
 </div>
 
 <script>
-    // Auto-focus PIN input
+    // Auto-focus email input
     document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('pin').focus();
+        document.getElementById('email').focus();
     });
-    
-    // Only allow numeric input for PIN
-    document.getElementById('pin').addEventListener('input', function(e) {
-        this.value = this.value.replace(/[^0-9]/g, '');
-    });
-    
-    // Toggle resend form
-    function toggleResendForm() {
-        const form = document.getElementById('resend-form');
-        form.classList.toggle('show');
-        if (form.classList.contains('show')) {
-            document.getElementById('resend-email').focus();
-        }
-    }
 </script>
 @endsection

@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'pin',
+        'is_active',
+        'pin_generated_at',
     ];
 
     /**
@@ -43,6 +46,30 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'pin_generated_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Generate a random 4-digit PIN
+     */
+    public function generatePin(): string
+    {
+        $pin = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+        $this->update([
+            'pin' => $pin,
+            'pin_generated_at' => now(),
+        ]);
+        return $pin;
+    }
+
+    public function activities()
+    {
+        return $this->hasMany(Activity::class);
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
     }
 }
