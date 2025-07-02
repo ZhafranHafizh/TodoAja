@@ -61,15 +61,17 @@ class AuthController extends Controller
             return redirect()->intended('/dashboard');
         }
 
-        // Then check if it's a user PIN
-        $user = User::where('pin', $request->pin)->where('is_active', true)->first();
+        // Then check if it's a user PIN (check all users with hashed PIN verification)
+        $users = User::where('is_active', true)->get();
         
-        if ($user) {
-            Session::put('authenticated', true);
-            Session::put('user_id', $user->id);
-            Session::put('user_type', 'user');
-            Session::put('user_email', $user->email);
-            return redirect()->intended('/dashboard');
+        foreach ($users as $user) {
+            if ($user->verifyPin($request->pin)) {
+                Session::put('authenticated', true);
+                Session::put('user_id', $user->id);
+                Session::put('user_type', 'user');
+                Session::put('user_email', $user->email);
+                return redirect()->intended('/dashboard');
+            }
         }
 
         return back()->withErrors(['pin' => 'Invalid PIN. Please check your PIN or create a new account.']);

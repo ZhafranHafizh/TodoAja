@@ -34,6 +34,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'pin',
     ];
 
     /**
@@ -46,6 +47,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'pin' => 'hashed',
             'pin_generated_at' => 'datetime',
         ];
     }
@@ -61,6 +63,14 @@ class User extends Authenticatable
             'pin_generated_at' => now(),
         ]);
         return $pin;
+    }
+
+    /**
+     * Verify if the provided PIN matches the user's hashed PIN
+     */
+    public function verifyPin(string $pin): bool
+    {
+        return \Hash::check($pin, $this->pin);
     }
 
     public function activities()
