@@ -5,6 +5,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CategoryController;
 
+// Public routes
+Route::get('/features', function () {
+    return view('features');
+})->name('features');
+
 // Authentication routes
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);

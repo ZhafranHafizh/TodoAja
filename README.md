@@ -90,10 +90,11 @@ A personal productivity system built with Laravel and Bootstrap 5. Features:
 ## Usage
 
 ### Getting Started
-1. **Registration**: Enter your email to create an account - a 4-digit PIN will be sent to your email
-2. **Login**: Use your email and the received PIN to access your dashboard
-3. **Create Tasks**: Add tasks with titles, descriptions, deadlines, and categories
-4. **Stay Organized**: Tasks are automatically organized by deadline status with visual indicators
+1. **Visit Features Page**: Check out all features at `/features` to see what ToDoinAja offers
+2. **Registration**: Enter your email to create an account - a 4-digit PIN will be sent to your email
+3. **Login**: Use your email and the received PIN to access your dashboard
+4. **Create Tasks**: Add tasks with titles, descriptions, deadlines, and categories
+5. **Stay Organized**: Tasks are automatically organized by deadline status with visual indicators
 
 ### Deadline Reminders
 The system automatically sends email reminders:

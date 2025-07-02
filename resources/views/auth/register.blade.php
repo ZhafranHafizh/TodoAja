@@ -178,6 +178,25 @@
         margin-top: 16px;
     }
     
+    .features-link {
+        color: #0052cc;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 8px 16px;
+        border-radius: 6px;
+        transition: all 0.2s;
+        display: inline-block;
+        border: 1px solid transparent;
+    }
+    
+    .features-link:hover {
+        background: #e6f2ff;
+        border-color: #b3d4ff;
+        text-decoration: none;
+        color: #0052cc;
+    }
+    
     .feature-list {
         background: #f4f5f7;
         border-radius: 8px;
@@ -320,6 +339,13 @@
                 </svg>
                 Back to Login
             </a>
+            
+            <!-- Features Link -->
+            <div style="text-align: center; margin-top: 16px;">
+                <a href="{{ route('features') }}" class="features-link">
+                    ✨ View All Features & Security
+                </a>
+            </div>
         </div>
     </div>
 </div>
