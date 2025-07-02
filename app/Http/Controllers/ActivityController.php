@@ -30,10 +30,41 @@ class ActivityController extends Controller
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
+        
+        // Filtering by deadline
+        if ($request->filled('deadline_filter')) {
+            switch ($request->deadline_filter) {
+                case 'with_deadline':
+                    $query->whereNotNull('deadline');
+                    break;
+                case 'upcoming':
+                    $query->whereBetween('deadline', [now(), now()->addWeek()]);
+                    break;
+                case 'overdue':
+                    $query->where('deadline', '<', now());
+                    break;
+                case 'no_deadline':
+                    $query->whereNull('deadline');
+                    break;
+            }
+        }
         // Sorting
         $sort = $request->get('sort', 'created_at');
         $direction = $request->get('direction', 'desc');
-        $query->orderBy($sort, $direction);
+        
+        // Special handling for deadline sorting to handle NULL values properly
+        if ($sort === 'deadline') {
+            if ($direction === 'asc') {
+                // For ascending: urgent deadlines first (earliest to latest), then tasks without deadlines
+                $query->orderByRaw('CASE WHEN deadline IS NULL THEN 1 ELSE 0 END, deadline ASC');
+            } else {
+                // For descending: latest deadlines first, then tasks without deadlines
+                $query->orderByRaw('CASE WHEN deadline IS NULL THEN 1 ELSE 0 END, deadline DESC');
+            }
+        } else {
+            $query->orderBy($sort, $direction);
+        }
+        
         $activities = $query->get();
         
         // Get categories for current user
@@ -68,9 +99,10 @@ class ActivityController extends Controller
             'description' => 'nullable|string',
             'deadline' => 'nullable|date',
             'category_id' => 'nullable|exists:categories,id',
+            'links' => 'nullable|string',
         ]);
         
-        $data = $request->only('title', 'description', 'deadline', 'category_id');
+        $data = $request->only('title', 'description', 'deadline', 'category_id', 'links');
         
         // Add user_id for regular users
         $currentUser = getCurrentUser();
@@ -89,7 +121,7 @@ class ActivityController extends Controller
         }
         
         Activity::create($data);
-        return redirect('/dashboard')->with('success', 'Activity created successfully!');
+        return redirect('/dashboard')->with('success', '🎉 Task Created Successfully! Your new task has been added to your dashboard.');
     }
 
     public function edit(Activity $activity)
@@ -123,9 +155,10 @@ class ActivityController extends Controller
             'description' => 'nullable|string',
             'deadline' => 'nullable|date',
             'category_id' => 'nullable|exists:categories,id',
+            'links' => 'nullable|string',
         ]);
         
-        $data = $request->only('title', 'description', 'deadline', 'category_id');
+        $data = $request->only('title', 'description', 'deadline', 'category_id', 'links');
         
         // Validate that category belongs to current user
         if ($currentUser && $data['category_id']) {
@@ -138,7 +171,7 @@ class ActivityController extends Controller
         }
         
         $activity->update($data);
-        return redirect('/dashboard')->with('success', 'Activity updated successfully!');
+        return redirect('/dashboard')->with('success', '✅ Task Updated! Your changes have been saved successfully.');
     }
 
     public function destroy(Activity $activity)
@@ -150,7 +183,7 @@ class ActivityController extends Controller
         }
         
         $activity->delete();
-        return redirect('/dashboard')->with('success', 'Activity deleted successfully!');
+        return redirect('/dashboard')->with('success', '🗑️ Task Deleted! The task has been removed from your dashboard.');
     }
 
     public function setStatus(Activity $activity, $status)
@@ -165,46 +198,38 @@ class ActivityController extends Controller
             $activity->status = $status;
             $activity->save();
         }
-        return redirect('/dashboard')->with('success', 'Activity status updated successfully!');
+        return redirect('/dashboard')->with('success', '🔄 Status Updated! Task status has been changed successfully.');
     }
 
-    public function bulkEdit(Request $request)
+    public function quickCategoryAssign(Request $request, Activity $activity)
     {
         $request->validate([
-            'task_ids' => 'required|array',
-            'task_ids.*' => 'exists:activities,id',
-            'bulk_status' => 'nullable|in:pending,in_progress,completed',
-            'bulk_category_id' => 'nullable|exists:categories,id',
+            'category_id' => 'nullable|exists:categories,id',
         ]);
         
+        // Check if user has permission to update this activity
         $currentUser = getCurrentUser();
-        $query = Activity::whereIn('id', $request->task_ids);
+        if ($currentUser && $activity->user_id !== $currentUser->id) {
+            abort(403, 'Unauthorized access to this activity.');
+        }
         
-        // Ensure user can only bulk edit their own activities
-        if ($currentUser) {
-            $query->where('user_id', $currentUser->id);
-            
-            // Validate category belongs to user
-            if ($request->filled('bulk_category_id')) {
-                $category = Category::where('id', $request->bulk_category_id)
-                                   ->where('user_id', $currentUser->id)
-                                   ->first();
-                if (!$category) {
-                    return back()->withErrors(['bulk_category_id' => 'Selected category is not valid.']);
-                }
+        // Validate category belongs to user if category_id is provided
+        if ($request->filled('category_id') && $currentUser) {
+            $category = Category::where('id', $request->category_id)
+                               ->where('user_id', $currentUser->id)
+                               ->first();
+            if (!$category) {
+                return response()->json(['success' => false, 'message' => 'Selected category is not valid.'], 400);
             }
         }
         
-        $data = [];
-        if ($request->filled('bulk_status')) {
-            $data['status'] = $request->bulk_status;
-        }
-        if ($request->filled('bulk_category_id')) {
-            $data['category_id'] = $request->bulk_category_id;
-        }
-        if (!empty($data)) {
-            $query->update($data);
-        }
-        return redirect('/dashboard')->with('success', 'Selected tasks updated successfully!');
+        $activity->category_id = $request->category_id;
+        $activity->save();
+        
+        return response()->json([
+            'success' => true, 
+            'message' => '📋 Category Updated! Task category has been changed successfully.',
+            'category' => $activity->category
+        ]);
     }
 }

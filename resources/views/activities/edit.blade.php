@@ -57,6 +57,18 @@
                                               rows="4"
                                               placeholder="Add activity description...">{{ old('description', $activity->description) }}</textarea>
                                 </div>
+
+                                <div class="mb-4">
+                                    <label for="links" class="form-label text-dark fw-semibold">
+                                        <i class="bi bi-link-45deg text-info me-1"></i>Related Links
+                                    </label>
+                                    <textarea class="form-control border-0 bg-light" 
+                                              id="links" 
+                                              name="links" 
+                                              rows="3"
+                                              placeholder="Add any relevant links for this task (e.g., documentation, resources, references)...">{{ old('links', $activity->links) }}</textarea>
+                                    <small class="text-muted">Optional links that might be useful for completing this task</small>
+                                </div>
                             </div>
 
                             <!-- Right Column -->

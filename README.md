@@ -1,23 +1,119 @@
-# TodoAja
+# ToDoinAja
 
 A personal productivity system built with Laravel and Bootstrap 5. Features:
-- PIN-based login (PIN stored in .env)
+- PIN-based authentication (email + 4-digit PIN)
+- User-specific activity management (private data per user)
 - Activity CRUD (create, read, update, delete)
 - Time tracking for activities
 - Activity logging
+- Category management with color coding
 - Standard to-do list features
+- **Automatic deadline reminders via email**
+- Modern Jira-inspired UI design
+- SweetAlert2 integration for enhanced user experience
+
+## Key Features
+
+### 🔐 Secure Authentication
+- PIN-based login system (no passwords required)
+- Email verification and unique email enforcement
+- 4-digit PIN generation and secure hashing
+- Automatic PIN resend functionality
+
+### 📧 Smart Email Reminders
+- **3-day advance notice**: Get reminded 3 days before your task deadline
+- **30-minute urgent alerts**: Last-minute reminders when deadlines approach
+- Professional HTML email templates
+- Duplicate reminder prevention
+- Works automatically in the background
+
+### 🎯 Task Management
+- Create, edit, and organize tasks with deadlines
+- Color-coded categories for better organization
+- Quick category assignment
+- Task status tracking (To-Do, In Progress, Completed)
+- Visual deadline indicators (overdue, urgent, upcoming)
+- Expandable task details with descriptions and links
+- Time tracking for productivity analysis
+
+### 🎨 Modern Interface
+- Jira-inspired responsive design
+- Bootstrap 5 styling
+- Intuitive user experience
+- Mobile-friendly layout
 
 ## Setup
-1. Copy `.env.example` to `.env` and set your MySQL credentials (DB_DATABASE=todoinaja).
-2. Set your desired PIN in `.env` as `APP_PIN=yourpin`.
-3. Run `composer install` to install dependencies.
-4. Run `php artisan key:generate` to set the app key.
-5. Run `php artisan migrate` to create the database tables.
-6. Serve the app with `php artisan serve`.
+
+### Prerequisites
+- PHP 8.1 or higher
+- Composer
+- MySQL database
+- Mail server configuration (for email reminders)
+
+### Installation Steps
+1. **Database Setup**: Copy `.env.example` to `.env` and configure your database settings:
+   ```
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=todoinaja
+   DB_USERNAME=your_username
+   DB_PASSWORD=your_password
+   ```
+
+2. **Email Configuration**: Set up your email settings for deadline reminders:
+   ```
+   MAIL_MAILER=smtp
+   MAIL_HOST=smtp.gmail.com
+   MAIL_PORT=587
+   MAIL_USERNAME=your_email@gmail.com
+   MAIL_PASSWORD=your_app_password
+   MAIL_ENCRYPTION=tls
+   MAIL_FROM_ADDRESS=your_email@gmail.com
+   MAIL_FROM_NAME="ToDoinAja"
+   ```
+
+3. **Install Dependencies**: Run `composer install` to install Laravel dependencies.
+
+4. **Generate App Key**: Run `php artisan key:generate` to set the application key.
+
+5. **Run Migrations**: Run `php artisan migrate` to create all database tables.
+
+6. **Start the Scheduler**: For automatic deadline reminders, run:
+   ```bash
+   php artisan schedule:work
+   ```
+   Or set up a cron job to run `php artisan schedule:run` every minute.
+
+7. **Serve the Application**: Start the development server with `php artisan serve`.
 
 ## Usage
-- Log in using your PIN.
-- Manage activities, track time, and view logs.
+
+### Getting Started
+1. **Registration**: Enter your email to create an account - a 4-digit PIN will be sent to your email
+2. **Login**: Use your email and the received PIN to access your dashboard
+3. **Create Tasks**: Add tasks with titles, descriptions, deadlines, and categories
+4. **Stay Organized**: Tasks are automatically organized by deadline status with visual indicators
+
+### Deadline Reminders
+The system automatically sends email reminders:
+- **3 days before deadline**: Advance warning to help you plan
+- **30 minutes before deadline**: Urgent final reminder
+
+To test the reminder system:
+```bash
+# Create test tasks
+php artisan test:create-deadline-task --type=3days
+php artisan test:create-deadline-task --type=30minutes
+
+# Manually trigger reminder check
+php artisan reminders:send-deadline-reminders
+```
+
+### Commands
+- `php artisan reminders:send-deadline-reminders` - Send deadline reminders
+- `php artisan test:create-deadline-task` - Create test tasks for testing reminders
+- `php artisan schedule:work` - Run the task scheduler
 
 ---
 This project is for personal use and does not require email/password authentication.

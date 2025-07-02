@@ -18,7 +18,7 @@ Route::middleware([\App\Http\Middleware\PinAuth::class])->group(function () {
     Route::get('/dashboard', [ActivityController::class, 'index']);
     Route::resource('activities', ActivityController::class)->except(['index', 'show']);
     Route::patch('/activities/{activity}/status/{status}', [ActivityController::class, 'setStatus'])->name('activities.setStatus');
-    Route::patch('/activities/bulk-edit', [ActivityController::class, 'bulkEdit'])->name('activities.bulkEdit');
+    Route::patch('/activities/{activity}/quick-category', [ActivityController::class, 'quickCategoryAssign'])->name('activities.quickCategoryAssign');
     Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
 });
 

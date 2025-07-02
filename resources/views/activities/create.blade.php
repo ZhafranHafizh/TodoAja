@@ -326,6 +326,25 @@
                         <div class="form-help-text">Provide additional context or requirements for this task</div>
                     </div>
 
+                    <!-- Task Links -->
+                    <div class="form-group">
+                        <label for="links" class="form-label">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 4px;">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Related Links
+                        </label>
+                        <textarea 
+                            class="form-control" 
+                            id="links" 
+                            name="links"
+                            placeholder="Add any relevant links for this task (e.g., documentation, resources, references)..."
+                            rows="3"
+                        >{{ old('links') }}</textarea>
+                        <div class="form-help-text">Optional links that might be useful for completing this task</div>
+                    </div>
+
                     <!-- Deadline and Category Row -->
                     <div class="form-group double-column">
                         <div>
@@ -418,6 +437,66 @@
             this.style.borderColor = '#de350b';
         } else {
             this.style.borderColor = '#dfe1e6';
+        }
+    });
+    
+    // Handle form submission with SweetAlert2
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const title = document.getElementById('title').value.trim();
+        const description = document.getElementById('description').value.trim();
+        const deadline = document.getElementById('deadline').value;
+        const categorySelect = document.getElementById('category_id');
+        const categoryName = categorySelect.options[categorySelect.selectedIndex].text;
+        
+        if (!title) {
+            TodoAlert.warning('Task Title Required', 'Please enter a title for your task');
+            document.getElementById('title').focus();
+            return;
+        }
+        
+        if (title.length > 100) {
+            TodoAlert.warning('Title Too Long', 'Task title must be 100 characters or less');
+            document.getElementById('title').focus();
+            return;
+        }
+        
+        // Create preview of task
+        let previewText = `Title: ${title}`;
+        if (description) previewText += `\nDescription: ${description.substring(0, 50)}${description.length > 50 ? '...' : ''}`;
+        if (deadline) previewText += `\nDeadline: ${new Date(deadline).toLocaleString()}`;
+        if (categorySelect.value) previewText += `\nCategory: ${categoryName}`;
+        
+        TodoAlert.confirm(
+            'Create New Task',
+            previewText,
+            'Create Task',
+            'Cancel'
+        ).then((result) => {
+            if (result.isConfirmed) {
+                const loadingAlert = TodoAlert.loading('Creating Task...', 'Please wait while we save your task');
+                this.submit();
+            }
+        });
+    });
+    
+    // Add confirmation for cancel action
+    document.querySelector('a[href*="dashboard"]').addEventListener('click', function(e) {
+        const title = document.getElementById('title').value.trim();
+        const description = document.getElementById('description').value.trim();
+        
+        if (title || description) {
+            e.preventDefault();
+            
+            TodoAlert.warning(
+                'Discard Changes?',
+                'You have unsaved changes. Are you sure you want to leave?'
+            ).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = this.href;
+                }
+            });
         }
     });
 </script>

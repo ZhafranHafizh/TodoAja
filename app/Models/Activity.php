@@ -16,6 +16,7 @@ class Activity extends Model
         'deadline',
         'category_id',
         'user_id',
+        'links',
     ];
 
     public function logs()
@@ -31,5 +32,10 @@ class Activity extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function reminders()
+    {
+        return $this->hasMany(ActivityReminder::class);
     }
 }

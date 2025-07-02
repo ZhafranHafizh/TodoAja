@@ -222,7 +222,7 @@
     <div class="auth-card">
         <!-- Header -->
         <div class="auth-header">
-            <h1>🎯 TodoAja</h1>
+            <h1>🎯 ToDoinAja</h1>
             <p>Enter your 4-digit PIN to continue</p>
         </div>
         
@@ -361,5 +361,42 @@
             document.getElementById('resend-email').focus();
         }
     }
+    
+    // Handle PIN login form submission
+    document.querySelector('form[action*="login"]').addEventListener('submit', function(e) {
+        const pin = document.getElementById('pin').value;
+        if (pin.length !== 4) {
+            e.preventDefault();
+            TodoAlert.warning('Invalid PIN', 'Please enter a 4-digit PIN');
+            return;
+        }
+        
+        e.preventDefault();
+        const loadingAlert = TodoAlert.loading('Verifying PIN...', 'Please wait while we authenticate you');
+        this.submit();
+    });
+    
+    // Handle resend PIN form submission
+    document.querySelector('form[action*="resend-pin"]').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('resend-email').value;
+        
+        if (!email) {
+            TodoAlert.warning('Email Required', 'Please enter your email address');
+            return;
+        }
+        
+        TodoAlert.confirm(
+            'Resend PIN',
+            `Send a new PIN to ${email}?`,
+            'Yes, send it!',
+            'Cancel'
+        ).then((result) => {
+            if (result.isConfirmed) {
+                const loadingAlert = TodoAlert.loading('Sending PIN...', 'Please wait while we send your new PIN');
+                this.submit();
+            }
+        });
+    });
 </script>
 @endsection

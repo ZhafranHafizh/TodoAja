@@ -10,14 +10,9 @@ class PinAuth
 {
     public function handle(Request $request, Closure $next)
     {
-        // Check if user is authenticated (either as master or regular user)
-        $userType = Session::get('user_type');
-        $userId = Session::get('user_id');
-        
-        if (!$userType || ($userType === 'user' && !$userId)) {
+        if (!Session::get('authenticated')) {
             return redirect('/login');
         }
-        
         return $next($request);
     }
 }

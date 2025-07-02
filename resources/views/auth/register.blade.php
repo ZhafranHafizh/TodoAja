@@ -218,7 +218,7 @@
     <div class="auth-card">
         <!-- Header -->
         <div class="auth-header">
-            <h1>🎯 Join TodoAja</h1>
+            <h1>🎯 Join ToDoinAja</h1>
             <p>Create your personal productivity account</p>
         </div>
         
@@ -328,6 +328,34 @@
     // Auto-focus email input
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('email').focus();
+    });
+    
+    // Handle registration form submission
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        
+        if (!email) {
+            TodoAlert.warning('Email Required', 'Please enter your email address');
+            return;
+        }
+        
+        if (!email.includes('@') || !email.includes('.')) {
+            TodoAlert.warning('Invalid Email', 'Please enter a valid email address');
+            return;
+        }
+        
+        TodoAlert.confirm(
+            'Create Account',
+            `Create a new ToDoinAja account for ${email}? We'll send a 4-digit PIN to this email address.`,
+            'Yes, create account!',
+            'Cancel'
+        ).then((result) => {
+            if (result.isConfirmed) {
+                const loadingAlert = TodoAlert.loading('Creating Account...', 'Please wait while we set up your account and send your PIN');
+                this.submit();
+            }
+        });
     });
 </script>
 @endsection

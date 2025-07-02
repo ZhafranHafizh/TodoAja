@@ -39,7 +39,7 @@ class CategoryController extends Controller
         }
         
         Category::create($data);
-        return redirect()->back()->with('success', 'Category created successfully!');
+        return redirect()->back()->with('success', '🎨 Category Created! Your new category is ready to organize your tasks.');
     }
 
     public function update(Request $request, Category $category)
@@ -58,7 +58,7 @@ class CategoryController extends Controller
             'name' => $request->name,
             'color' => $request->color
         ]);
-        return redirect()->back()->with('success', 'Category updated successfully!');
+        return redirect()->back()->with('success', '🏷️ Category Updated! Your category changes have been saved.');
     }
 
     public function destroy(Category $category)
@@ -70,6 +70,6 @@ class CategoryController extends Controller
         }
         
         $category->delete();
-        return redirect()->back()->with('success', 'Category deleted successfully!');
+        return redirect()->back()->with('success', '🗂️ Category Deleted! All tasks in this category are now uncategorized.');
     }
 }

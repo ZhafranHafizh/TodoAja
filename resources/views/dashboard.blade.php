@@ -263,6 +263,47 @@
         color: #5243aa;
     }
     
+    .jira-badge.links {
+        background: #e3fcef;
+        color: #006644;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .jira-badge.deadline {
+        background: #fff4e6;
+        color: #ff8b00;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .jira-badge.deadline.overdue {
+        background: #ffebe6;
+        color: #de350b;
+    }
+    
+    .jira-badge.deadline.urgent {
+        background: #fff4e6;
+        color: #ff8b00;
+        animation: pulse 2s infinite;
+    }
+    
+    .jira-badge.deadline.upcoming {
+        background: #deebff;
+        color: #0052cc;
+    }
+    
+    .jira-badge.deadline.completed {
+        background: #e3fcef;
+        color: #006644;
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.7; }
+        100% { opacity: 1; }
+    }
+    
     .category-color-dot {
         width: 12px;
         height: 12px;
@@ -363,25 +404,137 @@
         margin-bottom: 4px;
     }
     
-    .bulk-edit-panel {
-        background: #f4f5f7;
-        border: 1px solid #dfe1e6;
-        border-radius: 8px;
-        padding: 16px;
-        margin: 16px 24px;
-    }
-    
-    .task-checkbox {
-        margin-right: 16px;
-        transform: scale(1.1);
-        accent-color: #0052cc;
-    }
-    
     .task-actions {
         display: flex;
         gap: 8px;
         align-items: center;
         flex-shrink: 0;
+    }
+    
+    .dropdown-menu {
+        border: 1px solid #dfe1e6;
+        border-radius: 8px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        padding: 8px;
+        margin-top: 4px;
+    }
+    
+    .dropdown-item {
+        border-radius: 4px;
+        padding: 8px 12px;
+        transition: all 0.15s ease;
+        display: flex;
+        align-items: center;
+    }
+    
+    .dropdown-item:hover {
+        background: #f4f5f7;
+        color: #172b4d;
+    }
+    
+    .activity-details {
+        background: #f8f9fa;
+        border-top: 1px solid #dfe1e6;
+        padding: 16px 24px;
+        margin-top: 12px;
+        border-radius: 0 0 8px 8px;
+        display: none;
+        transition: all 0.3s ease;
+    }
+    
+    .activity-details.show {
+        display: block;
+        animation: slideDown 0.3s ease;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            max-height: 0;
+            padding: 0 24px;
+        }
+        to {
+            opacity: 1;
+            max-height: 500px;
+            padding: 16px 24px;
+        }
+    }
+    
+    .expand-btn {
+        background: none;
+        border: none;
+        color: #6b778c;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+    }
+    
+    .expand-btn:hover {
+        background: #f4f5f7;
+        color: #172b4d;
+    }
+    
+    .expand-btn.expanded {
+        color: #0052cc;
+        background: #deebff;
+    }
+    
+    .detail-row {
+        display: flex;
+        margin-bottom: 12px;
+        align-items: flex-start;
+    }
+    
+    .detail-label {
+        font-weight: 600;
+        color: #172b4d;
+        min-width: 100px;
+        margin-right: 16px;
+        font-size: 13px;
+    }
+    
+    .detail-value {
+        color: #6b778c;
+        flex: 1;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+    
+    .links-container {
+        background: white;
+        border: 1px solid #dfe1e6;
+        border-radius: 4px;
+        padding: 12px;
+        font-family: monospace;
+        font-size: 12px;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+    
+    .links-container a {
+        color: #0052cc;
+        text-decoration: none;
+    }
+    
+    .links-container a:hover {
+        text-decoration: underline;
+    }
+    
+    .has-links-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        color: #0052cc;
+        background: #deebff;
+        padding: 2px 6px;
+        border-radius: 12px;
+        margin-left: 8px;
     }
     
     .activity-item {
@@ -462,7 +615,7 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            TodoAja Dashboard
+            ToDoinAja Dashboard
             @if(getCurrentUser())
                 <span style="font-size: 14px; font-weight: 400; color: #6b778c; margin-left: 16px;">
                     {{ getCurrentUser()->email }}
@@ -517,7 +670,7 @@
                             <form action="{{ route('categories.destroy', $category) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="jira-btn ghost" onclick="return confirm('Delete this category?')" title="Delete category">
+                                <button type="submit" class="jira-btn ghost delete-category-btn" title="Delete category">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
@@ -587,10 +740,36 @@
                             </select>
                         </div>
                         <div class="flex-fill">
-                            <label class="form-label">Sort By</label>
-                            <select name="sort" class="form-select">
+                            <label class="form-label">Deadline Filter</label>
+                            <select name="deadline_filter" class="form-select">
+                                <option value="">All Tasks</option>
+                                <option value="with_deadline" {{ request('deadline_filter') == 'with_deadline' ? 'selected' : '' }}>Tasks with Deadlines</option>
+                                <option value="upcoming" {{ request('deadline_filter') == 'upcoming' ? 'selected' : '' }}>Due This Week</option>
+                                <option value="overdue" {{ request('deadline_filter') == 'overdue' ? 'selected' : '' }}>Overdue Tasks</option>
+                                <option value="no_deadline" {{ request('deadline_filter') == 'no_deadline' ? 'selected' : '' }}>No Deadline</option>
+                            </select>
+                        </div>
+                        <div class="flex-fill">
+                            <label class="form-label">
+                                Sort By
+                                <span id="deadline-help" class="text-muted small d-none">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 4px;">
+                                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                        <path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    Tasks with deadlines first, then others
+                                </span>
+                            </label>
+                            <select name="sort" class="form-select" id="sort-select">
                                 <option value="created_at" {{ request('sort') == 'created_at' ? 'selected' : '' }}>Created Date</option>
                                 <option value="title" {{ request('sort') == 'title' ? 'selected' : '' }}>Title</option>
+                                <option value="deadline" {{ request('sort') == 'deadline' ? 'selected' : '' }}>
+                                    Deadline
+                                    @if(isset($activities))
+                                        ({{ $activities->whereNotNull('deadline')->count() }} with deadlines)
+                                    @endif
+                                </option>
+                                <option value="status" {{ request('sort') == 'status' ? 'selected' : '' }}>Status</option>
                             </select>
                         </div>
                         <div class="flex-fill">
@@ -622,46 +801,11 @@
                     </div>
                 @endif
 
-                <!-- Bulk Edit Form -->
-                @if(isset($activities) && $activities->count())
-                    <form id="bulk-edit-form" method="POST" action="{{ route('activities.bulkEdit') }}" class="bulk-edit-panel d-none">
-                        @csrf
-                        @method('PATCH')
-                        <input type="hidden" name="task_ids[]" id="bulk-task-ids">
-                        <div class="row g-3 align-items-end">
-                            <div class="col-auto">
-                                <label for="bulk_status" class="form-label">Status</label>
-                                <select name="bulk_status" id="bulk_status" class="form-select">
-                                    <option value="">-- No Change --</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="in_progress">In Progress</option>
-                                    <option value="completed">Completed</option>
-                                </select>
-                            </div>
-                            <div class="col-auto">
-                                <label for="bulk_category_id" class="form-label">Category</label>
-                                <select name="bulk_category_id" id="bulk_category_id" class="form-select">
-                                    <option value="">-- No Change --</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-auto">
-                                <button type="submit" class="jira-btn primary">Apply to Selected</button>
-                            </div>
-                        </div>
-                    </form>
-                @endif
-
                 <!-- Activities List -->
                 <div class="p-0">
                     @if(isset($activities) && $activities->count())
                         @foreach($activities as $activity)
                             <div class="activity-item">
-                                <div class="form-check">
-                                    <input class="form-check-input bulk-task-checkbox task-checkbox" type="checkbox" value="{{ $activity->id }}">
-                                </div>
                                 <div class="activity-content">
                                     <div class="activity-title">
                                         {{ $activity->title }}
@@ -671,11 +815,115 @@
                                         @if($activity->category)
                                             <span class="jira-badge category" style="background-color: {{ $activity->category->color ?? '#5243aa' }}20; color: {{ $activity->category->color ?? '#5243aa' }}; border: 1px solid {{ $activity->category->color ?? '#5243aa' }}40;">{{ $activity->category->name }}</span>
                                         @endif
+                                        @if($activity->links)
+                                            <span class="has-links-indicator">
+                                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                                Links
+                                            </span>
+                                        @endif
+                                        <button class="expand-btn" data-activity-id="{{ $activity->id }}">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="expand-icon">
+                                                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                            Details
+                                        </button>
                                     </div>
                                     <div class="activity-desc">
-                                        {{ $activity->description }}
+                                        {{ Str::limit($activity->description, 100) }}
+                                        @if($activity->deadline || $activity->status === 'completed')
+                                            @if($activity->status === 'completed')
+                                                <br><span class="jira-badge deadline completed">
+                                                    ✅ Completed on: {{ $activity->updated_at->format('M j, Y H:i') }}
+                                                </span>
+                                            @elseif($activity->deadline)
+                                                @php
+                                                    $deadline = \Carbon\Carbon::parse($activity->deadline);
+                                                    $now = \Carbon\Carbon::now();
+                                                    $hoursUntilDeadline = $now->diffInHours($deadline, false);
+                                                    $daysUntilDeadline = $now->diffInDays($deadline, false);
+                                                    
+                                                    $isOverdue = $deadline->isPast();
+                                                    $isUrgent = !$isOverdue && $hoursUntilDeadline <= 24 && $hoursUntilDeadline >= 0;
+                                                    $isUpcoming = !$isOverdue && !$isUrgent && $daysUntilDeadline <= 7 && $daysUntilDeadline >= 0;
+                                                    
+                                                    if ($isOverdue) {
+                                                        $deadlineClass = 'deadline overdue';
+                                                    } elseif ($isUrgent) {
+                                                        $deadlineClass = 'deadline urgent';
+                                                    } elseif ($isUpcoming) {
+                                                        $deadlineClass = 'deadline upcoming';
+                                                    } else {
+                                                        $deadlineClass = 'deadline';
+                                                    }
+                                                @endphp
+                                                <br><span class="jira-badge {{ $deadlineClass }}">
+                                                    @if($isOverdue)
+                                                        ⚠️ Overdue: {{ $deadline->format('M j, Y H:i') }}
+                                                    @elseif($isUrgent)
+                                                        🔥 Due Soon: {{ $deadline->format('M j, Y H:i') }}
+                                                    @elseif($isUpcoming)
+                                                        📅 Due on: {{ $deadline->format('M j, Y H:i') }}
+                                                    @else
+                                                        📅 Due: {{ $deadline->format('M j, Y H:i') }}
+                                                    @endif
+                                                </span>
+                                            @endif
+                                        @endif
+                                        @if($activity->links)
+                                            <br><span class="jira-badge links">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 4px;">
+                                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.71" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                                Links Available
+                                            </span>
+                                        @endif
+                                    </div>
+                                    
+                                    <!-- Expandable Details Section -->
+                                    <div class="activity-details" id="details-{{ $activity->id }}">
+                                        <div class="detail-row">
+                                            <div class="detail-label">Full Description:</div>
+                                            <div class="detail-value">{{ $activity->description ?: 'No description provided' }}</div>
+                                        </div>
+                                        
                                         @if($activity->deadline)
-                                            <br><span class="jira-badge deadline">Due: {{ \Carbon\Carbon::parse($activity->deadline)->format('M j, Y H:i') }}</span>
+                                        <div class="detail-row">
+                                            <div class="detail-label">Deadline:</div>
+                                            <div class="detail-value">{{ \Carbon\Carbon::parse($activity->deadline)->format('l, F j, Y \a\t g:i A') }}</div>
+                                        </div>
+                                        @endif
+                                        
+                                        @if($activity->category)
+                                        <div class="detail-row">
+                                            <div class="detail-label">Category:</div>
+                                            <div class="detail-value">
+                                                <span class="category-color-dot" style="background-color: {{ $activity->category->color ?? '#5243aa' }};"></span>
+                                                {{ $activity->category->name }}
+                                            </div>
+                                        </div>
+                                        @endif
+                                        
+                                        <div class="detail-row">
+                                            <div class="detail-label">Created:</div>
+                                            <div class="detail-value">{{ $activity->created_at->format('l, F j, Y \a\t g:i A') }}</div>
+                                        </div>
+                                        
+                                        <div class="detail-row">
+                                            <div class="detail-label">Last Updated:</div>
+                                            <div class="detail-value">{{ $activity->updated_at->format('l, F j, Y \a\t g:i A') }}</div>
+                                        </div>
+                                        
+                                        @if($activity->links)
+                                        <div class="detail-row">
+                                            <div class="detail-label">Related Links:</div>
+                                            <div class="detail-value">
+                                                <div class="links-container">{{ $activity->links }}</div>
+                                            </div>
+                                        </div>
                                         @endif
                                     </div>
                                 </div>
@@ -689,6 +937,26 @@
                                             </button>
                                         </form>
                                     @endif
+                                    
+                                    <!-- Quick Category Assignment -->
+                                    <div class="dropdown d-inline">
+                                        <button class="jira-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586L17 7.171c.362.362.586.862.586 1.414V19a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                            Category
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item quick-category-btn" href="#" data-activity-id="{{ $activity->id }}" data-category-id="">No Category</a></li>
+                                            @foreach($categories as $category)
+                                                <li><a class="dropdown-item quick-category-btn" href="#" data-activity-id="{{ $activity->id }}" data-category-id="{{ $category->id }}">
+                                                    <span class="category-color-dot" style="background-color: {{ $category->color ?? '#5243aa' }};"></span>
+                                                    {{ $category->name }}
+                                                </a></li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    
                                     <a href="{{ route('activities.edit', $activity) }}" class="jira-btn">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -699,7 +967,7 @@
                                     <form action="{{ route('activities.destroy', $activity) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="jira-btn danger" onclick="return confirm('Delete this activity?')">
+                                        <button type="submit" class="jira-btn danger delete-activity-btn">
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <polyline points="3,6 5,6 21,6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                                 <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -739,33 +1007,180 @@
         });
     });
 
-    // Bulk edit functionality
-    const checkboxes = document.querySelectorAll('.bulk-task-checkbox');
-    const bulkForm = document.getElementById('bulk-edit-form');
-    function updateBulkFormInputs() {
-        // Remove old hidden inputs
-        document.querySelectorAll('.bulk-task-id-input').forEach(e => e.remove());
-        // Add new hidden inputs for each checked
-        const selected = Array.from(checkboxes).filter(c => c.checked).map(c => c.value);
-        selected.forEach(id => {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'task_ids[]';
-            input.value = id;
-            input.classList.add('bulk-task-id-input');
-            bulkForm.appendChild(input);
+    // Quick category assignment functionality
+    document.querySelectorAll('.quick-category-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const activityId = this.dataset.activityId;
+            const categoryId = this.dataset.categoryId || '';
+            const categoryName = categoryId ? this.textContent.trim() : 'No Category';
+            
+            // Close the dropdown
+            const dropdown = bootstrap.Dropdown.getInstance(this.closest('.dropdown').querySelector('.dropdown-toggle'));
+            if (dropdown) dropdown.hide();
+            
+            // Show loading
+            TodoAlert.loading('Updating Category...', 'Please wait');
+            
+            // Make AJAX request
+            fetch(`/activities/${activityId}/quick-category`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    category_id: categoryId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    TodoAlert.success('Category Updated!', data.message).then(() => {
+                        // Reload the page to show updated category
+                        window.location.reload();
+                    });
+                } else {
+                    TodoAlert.error('Error!', data.message || 'Failed to update category');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                TodoAlert.error('Error!', 'An error occurred while updating the category');
+            });
         });
-        if (selected.length > 0) {
-            bulkForm.classList.remove('d-none');
-        } else {
-            bulkForm.classList.add('d-none');
+    });
+
+    // Sort help text functionality
+    const sortSelect = document.getElementById('sort-select');
+    const deadlineHelp = document.getElementById('deadline-help');
+    
+    function updateSortHelp() {
+        if (sortSelect && deadlineHelp) {
+            if (sortSelect.value === 'deadline') {
+                deadlineHelp.classList.remove('d-none');
+            } else {
+                deadlineHelp.classList.add('d-none');
+            }
         }
     }
-    checkboxes.forEach(cb => {
-        cb.addEventListener('change', updateBulkFormInputs);
-    });
-    if (bulkForm) {
-        bulkForm.addEventListener('submit', updateBulkFormInputs);
+    
+    if (sortSelect) {
+        sortSelect.addEventListener('change', updateSortHelp);
+        // Initialize on page load
+        updateSortHelp();
     }
+
+    // Expandable task details functionality
+    document.querySelectorAll('.expand-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const activityId = this.dataset.activityId;
+            const detailsSection = document.getElementById(`details-${activityId}`);
+            const expandIcon = this.querySelector('.expand-icon');
+            
+            if (detailsSection.classList.contains('show')) {
+                // Collapse
+                detailsSection.classList.remove('show');
+                this.classList.remove('expanded');
+                expandIcon.style.transform = 'rotate(0deg)';
+                this.innerHTML = `
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="expand-icon">
+                        <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Details
+                `;
+            } else {
+                // Expand
+                detailsSection.classList.add('show');
+                this.classList.add('expanded');
+                expandIcon.style.transform = 'rotate(180deg)';
+                this.innerHTML = `
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="expand-icon" style="transform: rotate(180deg);">
+                        <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Hide Details
+                `;
+            }
+        });
+    });
+
+    // Auto-linkify links in the links container
+    document.querySelectorAll('.links-container').forEach(container => {
+        const text = container.textContent;
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const linkedText = text.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');
+        container.innerHTML = linkedText;
+    });
+    
+    // Delete activity confirmation
+    document.querySelectorAll('.delete-activity-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            
+            TodoAlert.delete(
+                'Delete Activity',
+                'This action cannot be undone!'
+            ).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading
+                    const loadingAlert = TodoAlert.loading('Deleting...', 'Please wait');
+                    form.submit();
+                }
+            });
+        });
+    });
+    
+    // Category delete confirmation
+    document.querySelectorAll('.delete-category-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const form = this.closest('form');
+            
+            TodoAlert.delete(
+                'Delete Category',
+                'All activities in this category will be uncategorized!'
+            ).then((result) => {
+                if (result.isConfirmed) {
+                    const loadingAlert = TodoAlert.loading('Deleting...', 'Please wait');
+                    form.submit();
+                }
+            });
+        });
+    });
+    
+    // Status change confirmation for important activities
+    document.querySelectorAll('.status-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const activityName = this.closest('.jira-list-item').querySelector('.activity-title').textContent;
+            const newStatus = this.dataset.status;
+            const isImportant = this.closest('.jira-list-item').querySelector('.priority-high');
+            
+            if (isImportant && newStatus === 'completed') {
+                e.preventDefault();
+                const form = this.closest('form');
+                
+                TodoAlert.confirm(
+                    'Complete Important Task',
+                    `Are you sure you want to mark "${activityName}" as completed?`,
+                    'Yes, complete it!',
+                    'Not yet'
+                ).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            }
+        });
+    });
+    
+    // Add success callback for form submissions
+    window.addEventListener('beforeunload', function() {
+        // Close any open SweetAlert2 dialogs
+        if (window.Swal && Swal.isVisible()) {
+            Swal.close();
+        }
+    });
 </script>
 @endsection

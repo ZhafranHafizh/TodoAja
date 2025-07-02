@@ -28,16 +28,18 @@ class AuthController extends Controller
             'email.unique' => 'An account with this email address already exists. Please use the login page or try a different email address.',
         ]);
 
-        // Create user without password, name will be set from email
+        // Generate PIN first
+        $pin = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+
+        // Create user with PIN
         $user = User::create([
             'name' => explode('@', $request->email)[0], // Use email prefix as name
             'email' => $request->email,
             'password' => bcrypt('dummy'), // We don't use passwords, but field is required
+            'pin' => $pin, // Set the PIN during creation
+            'pin_generated_at' => now(),
             'is_active' => true,
         ]);
-
-        // Generate PIN and send email
-        $pin = $user->generatePin();
         
         try {
             Mail::to($user->email)->send(new PinNotification($user, $pin, true));

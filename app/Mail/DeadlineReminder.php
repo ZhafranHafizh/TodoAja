@@ -8,24 +8,22 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use App\Models\User;
+use App\Models\Activity;
 
-class PinNotification extends Mailable
+class DeadlineReminder extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user;
-    public $pin;
-    public $isNewAccount;
+    public $activity;
+    public $reminderType;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(User $user, string $pin, bool $isNewAccount = false)
+    public function __construct(Activity $activity, string $reminderType)
     {
-        $this->user = $user;
-        $this->pin = $pin;
-        $this->isNewAccount = $isNewAccount;
+        $this->activity = $activity;
+        $this->reminderType = $reminderType;
     }
 
     /**
@@ -33,10 +31,10 @@ class PinNotification extends Mailable
      */
     public function envelope(): Envelope
     {
-        $subject = $this->isNewAccount 
-            ? 'Welcome to ToDoinAja - Your Account PIN' 
-            : 'Your ToDoinAja Login PIN';
-            
+        $subject = $this->reminderType === '30_minutes' 
+            ? 'Urgent: Task deadline in 30 minutes!' 
+            : 'Reminder: Task deadline approaching in 3 days';
+
         return new Envelope(
             subject: $subject,
         );
@@ -48,7 +46,7 @@ class PinNotification extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.pin-notification',
+            view: 'emails.deadline-reminder',
         );
     }
 

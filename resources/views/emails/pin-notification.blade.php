@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $isNewAccount ? 'Welcome to TodoAja' : 'Your TodoAja PIN' }}</title>
+    <title>{{ $isNewAccount ? 'Welcome to ToDoinAja' : 'Your ToDoinAja PIN' }}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -192,7 +192,7 @@
     <div class="email-container">
         <!-- Header -->
         <div class="email-header">
-            <h1>🎯 TodoAja</h1>
+            <h1>🎯 ToDoinAja</h1>
             <p>Your Personal Productivity System</p>
         </div>
         
@@ -200,13 +200,13 @@
         <div class="email-body">
             @if($isNewAccount)
                 <div class="welcome-message">
-                    <h2>Welcome to TodoAja! 🎉</h2>
+                    <h2>Welcome to ToDoinAja! 🎉</h2>
                     <p>Your account has been successfully created. Here's your unique PIN to get started.</p>
                 </div>
             @else
                 <div class="welcome-message">
                     <h2>Your Login PIN</h2>
-                    <p>Here's your TodoAja login PIN as requested.</p>
+                    <p>Here's your ToDoinAja login PIN as requested.</p>
                 </div>
             @endif
             
@@ -221,7 +221,7 @@
             <div class="instructions">
                 <h3>🔐 How to Access Your Account</h3>
                 <ol>
-                    <li>Go to the TodoAja login page</li>
+                    <li>Go to the ToDoinAja login page</li>
                     <li>Enter this 4-digit PIN: <strong>{{ $pin }}</strong></li>
                     <li>Click "Login" to access your dashboard</li>
                     <li>Start organizing your tasks and boosting productivity!</li>
@@ -231,7 +231,7 @@
             @if($isNewAccount)
                 <div style="text-align: center;">
                     <a href="{{ url('/login') }}" class="login-button">
-                        🚀 Start Using TodoAja
+                        🚀 Start Using ToDoinAja
                     </a>
                 </div>
             @endif
@@ -240,7 +240,7 @@
             <div class="security-notice">
                 <p>
                     🔒 <strong>Security Notice:</strong> Keep this PIN secure and don't share it with anyone. 
-                    This PIN provides full access to your TodoAja account.
+                    This PIN provides full access to your ToDoinAja account.
                 </p>
             </div>
         </div>
@@ -252,7 +252,7 @@
                 If you didn't request this PIN, please ignore this email.
             </p>
             <p style="margin-top: 16px; font-size: 12px; color: #97a0af;">
-                © {{ date('Y') }} TodoAja - Personal Productivity System
+                © {{ date('Y') }} ToDoinAja - Personal Productivity System
             </p>
         </div>
     </div>
