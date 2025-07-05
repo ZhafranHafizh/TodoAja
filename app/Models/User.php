@@ -19,6 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'pin',
@@ -71,6 +72,22 @@ class User extends Authenticatable
     public function verifyPin(string $pin): bool
     {
         return \Hash::check($pin, $this->pin);
+    }
+
+    /**
+     * Find user by username and verify PIN
+     */
+    public static function findByUsernameAndPin(string $username, string $pin): ?User
+    {
+        $user = self::where('username', $username)
+                    ->where('is_active', true)
+                    ->first();
+        
+        if ($user && $user->verifyPin($pin)) {
+            return $user;
+        }
+        
+        return null;
     }
 
     public function activities()
