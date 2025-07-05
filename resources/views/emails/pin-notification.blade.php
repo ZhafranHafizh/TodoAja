@@ -222,6 +222,7 @@
                 <h3>🔐 How to Access Your Account</h3>
                 <ol>
                     <li>Go to the ToDoinAja login page</li>
+                    <li>Enter your correct username</li>
                     <li>Enter this 4-digit PIN: <strong>{{ $pin }}</strong></li>
                     <li>Click "Login" to access your dashboard</li>
                     <li>Start organizing your tasks and boosting productivity!</li>

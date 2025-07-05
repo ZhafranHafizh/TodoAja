@@ -293,6 +293,33 @@
             <form method="POST" action="{{ route('register') }}">
                 @csrf
                 <div class="form-group">
+                    <label for="username" class="form-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px;">
+                            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Choose Username
+                    </label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="username" 
+                        name="username" 
+                        placeholder="Enter your desired username"
+                        required 
+                        value="{{ old('username') }}"
+                        autocomplete="username"
+                        autofocus
+                        pattern="[a-zA-Z0-9_]+"
+                        minlength="3"
+                        maxlength="20"
+                    >
+                    <small style="color: #6b778c; font-size: 12px; margin-top: 4px; display: block;">
+                        3-20 characters, letters, numbers, and underscores only
+                    </small>
+                </div>
+                
+                <div class="form-group">
                     <label for="email" class="form-label">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px;">
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -309,7 +336,6 @@
                         required 
                         value="{{ old('email') }}"
                         autocomplete="email"
-                        autofocus
                     >
                 </div>
                 
@@ -324,7 +350,7 @@
             
             <div class="help-text">
                 We'll send a 4-digit PIN to your email address.<br>
-                No passwords needed - just your PIN!
+                Login with your username and PIN - no passwords needed!
             </div>
             
             <!-- Divider -->

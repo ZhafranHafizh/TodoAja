@@ -242,7 +242,7 @@
         <!-- Header -->
         <div class="auth-header">
             <h1>🎯 ToDoinAja</h1>
-            <p>Enter your 4-digit PIN to continue</p>
+            <p>Enter your username and 4-digit PIN to continue</p>
         </div>
         
         <!-- Body -->
@@ -286,6 +286,27 @@
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="form-group">
+                    <label for="username" class="form-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px;">
+                            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        Username
+                    </label>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        id="username" 
+                        name="username" 
+                        placeholder="Enter your username"
+                        required 
+                        autofocus 
+                        value="{{ old('username') }}"
+                        autocomplete="username"
+                    >
+                </div>
+                
+                <div class="form-group">
                     <label for="pin" class="form-label">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 6px;">
                             <rect x="3" y="11" width="18" height="10" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
@@ -301,7 +322,6 @@
                         name="pin" 
                         placeholder="••••"
                         required 
-                        autofocus 
                         inputmode="numeric" 
                         pattern="[0-9]*"
                         maxlength="4"
@@ -318,7 +338,7 @@
             </form>
             
             <div class="help-text">
-                Enter the 4-digit PIN from your email
+                Enter your username and the 4-digit PIN from your email
             </div>
             
             <!-- Divider -->
@@ -348,13 +368,13 @@
                 <form method="POST" action="{{ route('resend-pin') }}">
                     @csrf
                     <div class="form-group">
-                        <label for="resend-email" class="form-label">Email Address</label>
+                        <label for="resend-username" class="form-label">Username</label>
                         <input 
-                            type="email" 
+                            type="text" 
                             class="form-control" 
-                            id="resend-email" 
-                            name="email" 
-                            placeholder="Enter your email"
+                            id="resend-username" 
+                            name="username" 
+                            placeholder="Enter your username"
                             required
                             style="font-family: Inter, sans-serif; letter-spacing: normal; text-align: left; font-size: 16px;"
                         >
@@ -369,9 +389,9 @@
 </div>
 
 <script>
-    // Auto-focus PIN input
+    // Auto-focus username input
     document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('pin').focus();
+        document.getElementById('username').focus();
     });
     
     // Only allow numeric input for PIN
@@ -384,13 +404,21 @@
         const form = document.getElementById('resend-form');
         form.classList.toggle('show');
         if (form.classList.contains('show')) {
-            document.getElementById('resend-email').focus();
+            document.getElementById('resend-username').focus();
         }
     }
     
-    // Handle PIN login form submission
+    // Handle login form submission
     document.querySelector('form[action*="login"]').addEventListener('submit', function(e) {
+        const username = document.getElementById('username').value;
         const pin = document.getElementById('pin').value;
+        
+        if (!username.trim()) {
+            e.preventDefault();
+            TodoAlert.warning('Username Required', 'Please enter your username');
+            return;
+        }
+        
         if (pin.length !== 4) {
             e.preventDefault();
             TodoAlert.warning('Invalid PIN', 'Please enter a 4-digit PIN');
@@ -398,23 +426,23 @@
         }
         
         e.preventDefault();
-        const loadingAlert = TodoAlert.loading('Verifying PIN...', 'Please wait while we authenticate you');
+        const loadingAlert = TodoAlert.loading('Verifying credentials...', 'Please wait while we authenticate you');
         this.submit();
     });
     
     // Handle resend PIN form submission
     document.querySelector('form[action*="resend-pin"]').addEventListener('submit', function(e) {
         e.preventDefault();
-        const email = document.getElementById('resend-email').value;
+        const username = document.getElementById('resend-username').value;
         
-        if (!email) {
-            TodoAlert.warning('Email Required', 'Please enter your email address');
+        if (!username.trim()) {
+            TodoAlert.warning('Username Required', 'Please enter your username');
             return;
         }
         
         TodoAlert.confirm(
             'Resend PIN',
-            `Send a new PIN to ${email}?`,
+            `Send a new PIN for username: ${username}?`,
             'Yes, send it!',
             'Cancel'
         ).then((result) => {
